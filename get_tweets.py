@@ -5,7 +5,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 TARGET_USERNAME = 'elonmusk'
-MAX_TWEET_COUNT = 5000 # for getting tweets
+MAX_TWEET_COUNT = 5000  # for getting tweets
 DATE_STR_FORMAT = '%Y-%m-%d'
 MAX_WORKER = 8  # for ThreadPoolExecutor
 
@@ -45,7 +45,7 @@ def get_tweets_multithreaded(date_ranges):
         # split range pairs to 2 lists of all starts and all ends
         zipped_pairs = zip(*date_ranges)
         starts, ends = zipped_pairs
-        
+
         # run fetch function with ThreadPoolExecutor
         results = executor.map(get_tweets, starts, ends)
 
@@ -64,14 +64,17 @@ def write_csv(tweets, filename):
     :param filename: Filename of csv to be generated
     :type filename: str
     """
-    fieldnames = tweets[0].__dict__.keys()  # get header from first element's attributes
+    print('Writing to CSV...')
+
+    # get header from first element's attributes
+    fieldnames = tweets[0].__dict__.keys()
 
     # write data to csv
     with open(filename, mode='w', newline='\n', encoding='utf-8') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()  # write csv header
         for tweet in tweets:
-            writer.writerow(tweet.__dict__) # write attributes as row
+            writer.writerow(tweet.__dict__)  # write attributes as row
 
 
 if __name__ == "__main__":
@@ -84,7 +87,7 @@ if __name__ == "__main__":
     interval = relativedelta(months=1)
 
     # how times to increment / how many time ranges to generate
-    count = 46 
+    count = 46
     date_ranges = list()
     curr_start = from_date
 
@@ -98,10 +101,17 @@ if __name__ == "__main__":
 
         curr_start = curr_end  # set end as next start
 
-    print("RANGE: {} - {}".format(from_date.strftime(DATE_STR_FORMAT),
-                                  curr_start.strftime(DATE_STR_FORMAT)))
+    print('***Fetching tweets: {} - {}***'.format(from_date.strftime(DATE_STR_FORMAT),
+                                                  curr_start.strftime(DATE_STR_FORMAT)))
 
     tweets = get_tweets_multithreaded(date_ranges)
-    write_csv(tweets, filename)
 
-    print("Done!")
+    size = len(tweets)
+    if size == 0:
+        print("No tweets found")
+    else:
+        print('\n***FETCHED: {} tweets from {} to {}***\n'.format(size, from_date.strftime(DATE_STR_FORMAT),
+                                                                  curr_start.strftime(DATE_STR_FORMAT)))
+
+        write_csv(tweets, filename)
+        print("Done!")
