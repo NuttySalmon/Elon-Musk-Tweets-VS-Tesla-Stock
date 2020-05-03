@@ -81,13 +81,13 @@ if __name__ == "__main__":
     filename = 'tweets.csv'
 
     # begining date
-    from_date = datetime(2016, 1, 1)
+    from_date = datetime(2016, 1, 2)
 
     # interval to increment when generating the ranges
     interval = relativedelta(months=1)
 
     # how times to increment / how many time ranges to generate
-    count = 46
+    count = 52
     date_ranges = list()
     curr_start = from_date
 
