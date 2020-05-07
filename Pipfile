@@ -11,6 +11,9 @@ ipykernel = "*"
 getoldtweets3 = "*"
 python-dateutil = "*"
 sklearn = "*"
+seaborn = "*"
+xgboost = "*"
+statsmodels = "*"
 
 [requires]
 python_version = "3.8"
